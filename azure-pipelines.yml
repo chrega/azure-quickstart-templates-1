@@ -1,4 +1,5 @@
 # Starter pipeline
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -17,3 +18,17 @@ steps:
       SourceFolder: 'quickstarts/microsoft.web/webapp-linux-managed-mysql'
       Contents: '**'
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: 'Windows Azure  MSDN - Visual Studio Premium(cabaac51-e1d5-4656-8b2d-c1eed541e033)'
+      subscriptionId: 'cabaac51-e1d5-4656-8b2d-c1eed541e033'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: 'ceodydev-rg'
+      location: 'UK South'
+      templateLocation: 'Linked artifact'
+      csmFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.json'
+      csmParametersFile: '$(Build.ArtifactStagingDirectory)/azuredeploy.parameters.json'
+      overrideParameters: '-siteName $(siteName) -administratorLogin $(adminUser) -administratorLoginPassword $(ARM_PASS)'
+      deploymentMode: 'Incremental'
